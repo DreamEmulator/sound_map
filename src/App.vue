@@ -1,16 +1,19 @@
 <template>
   <div id="app">
     <img class="logo" src="./assets/logo.png">
-    <ul style="text-align: left">
-      <h3>Sounds:</h3>
-      <li>static/sounds/bell.mp3 </li>
-      <li>static/sounds/positive.mp3</li>
-    </ul>
-    <ul style="text-align: left">
-      <h3>Images:</h3>
-      <li>static/images/the_cove.jpeg</li>
-      <li>static/images/fishy.jpeg</li>
-    </ul>
+    <div class="dev_notes" style="float: right; margin-right: 2em; text-align: left; background-color: aliceblue; padding: 0.25em 1em">
+      <h3>Dev Notes</h3>
+      <ul style="text-align: left">
+        <h3>Sounds:</h3>
+        <li>static/sounds/bell.mp3</li>
+        <li>static/sounds/positive.mp3</li>
+      </ul>
+      <ul style="text-align: left">
+        <h3>Images:</h3>
+        <li>static/images/the_cove.jpeg</li>
+        <li>static/images/fishy.jpeg</li>
+      </ul>
+    </div>
     <div id="sound_map">
       <h1>Sound Map {{name}}</h1>
       <div class="image_control">
@@ -19,18 +22,23 @@
         <input v-if="!image_stored" v-model="image" placeholder="Enter URL for image">
       </div>
       <div class="selection_control">
-        <button v-if="saved_selections.length > 0" v-on:click="show_saved_selections = !show_saved_selections">Show selections</button>
+        <button v-if="saved_selections.length > 0" v-on:click="show_saved_selections = !show_saved_selections">Show
+          selections
+        </button>
         <button v-if="saved_selections.length > 0" v-on:click="edit_selections = !edit_selections">Edit selections
         </button>
         <button v-if="saved_selections.length > 0" v-on:click="reset_saved_selections">Reset selections</button>
       </div>
-        <div class="map"  v-on:mouseup="stop_select">
-          <img id="map_image"v-on:mousedown="start_select" :class="{show_image:image_stored}" :src="`${image}`" v-on:load="image_loaded" v-on:error="image_error" v-on:mousemove="select">
-          <saved-selection v-for="saved_selection in saved_selections" :key="saved_selection.id"
-                           :selection="JSON.parse(saved_selection)" :save_prompt="save_prompt" :show_saved_selections="show_saved_selections"
-                           :edit_selections="edit_selections" v-on:play_sound="play_sound"></saved-selection>
-          <new-selection :selection="selection" :save_prompt="save_prompt" :selection_active="selection_active" v-on:save_selection="save_selection"></new-selection>
-        </div>
+      <div class="map" v-on:mouseup="stop_select">
+        <img id="map_image" v-on:mousedown="start_select" :class="{show_image:image_stored}" :src="`${image}`"
+             v-on:load="image_loaded" v-on:error="image_error" v-on:mousemove="select">
+        <saved-selection v-for="saved_selection in saved_selections" :key="saved_selection.id"
+                         :selection="JSON.parse(saved_selection)" :save_prompt="save_prompt"
+                         :show_saved_selections="show_saved_selections"
+                         :edit_selections="edit_selections" v-on:play_sound="play_sound"></saved-selection>
+        <new-selection :selection="selection" :save_prompt="save_prompt" :selection_active="selection_active"
+                       v-on:save_selection="save_selection"></new-selection>
+      </div>
     </div>
     <audio ref="play_sound" autoplay v-bind:src="`${audio}`" type="audio/mp3">
     </audio>
@@ -95,9 +103,12 @@
       },
       save_image: function () {
         localStorage.SoundMapImage = this.image;
+        this.reset_saved_selections();
+        this.show_saved_selections = true;
         this.check_image();
       },
       change_image: function () {
+        this.show_saved_selections = false;
         this.image_stored = false;
         this.save_prompt = false;
       },
@@ -120,8 +131,8 @@
         this.selecting = false;
         this.selecting = true;
         this.selection_active = true;
-        this.selection.from_x = ((event.clientX - this.image_dimensions.left) / this.image_dimensions.width)*100;
-        this.selection.from_y = ((event.clientY - this.image_dimensions.top) / this.image_dimensions.height)*100;
+        this.selection.from_x = ((event.clientX - this.image_dimensions.left) / this.image_dimensions.width) * 100;
+        this.selection.from_y = ((event.clientY - this.image_dimensions.top) / this.image_dimensions.height) * 100;
 
         this.save_prompt = false;
       },
@@ -129,8 +140,8 @@
         this.e_stop();
         if (this.selecting) {
 
-          this.selection.to_x = ((event.clientX - this.image_dimensions.left) / this.image_dimensions.width)*100;
-          this.selection.to_y = ((event.clientY - this.image_dimensions.top) / this.image_dimensions.height)*100;
+          this.selection.to_x = ((event.clientX - this.image_dimensions.left) / this.image_dimensions.width) * 100;
+          this.selection.to_y = ((event.clientY - this.image_dimensions.top) / this.image_dimensions.height) * 100;
 
           this.selection.height = this.selection.to_y - this.selection.from_y;
           this.selection.width = this.selection.to_x - this.selection.from_x;
@@ -161,6 +172,7 @@
         }
       },
       reset_saved_selections: function () {
+        localStorage.saved_selections = [];
         this.saved_selections = [];
         this.selecting = false;
       },
