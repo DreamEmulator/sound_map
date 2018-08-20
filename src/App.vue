@@ -1,7 +1,16 @@
 <template>
   <div id="app">
     <img class="logo" src="./assets/logo.png">
-
+    <ul style="text-align: left">
+      <h3>Sounds:</h3>
+      <li>static/sounds/bell.mp3 </li>
+      <li>static/sounds/positive.mp3</li>
+    </ul>
+    <ul style="text-align: left">
+      <h3>Images:</h3>
+      <li>static/images/the_cove.jpeg</li>
+      <li>static/images/fishy.jpeg</li>
+    </ul>
     <div id="sound_map">
       <h1>Sound Map {{name}}</h1>
       <div class="image_control">
@@ -16,23 +25,13 @@
         <button v-if="saved_selections.length > 0" v-on:click="reset_saved_selections">Reset selections</button>
       </div>
         <div class="map"  v-on:mouseup="stop_select">
+          <img id="map_image"v-on:mousedown="start_select" :class="{show_image:image_stored}" :src="`${image}`" v-on:load="image_loaded" v-on:error="image_error" v-on:mousemove="select">
           <saved-selection v-for="saved_selection in saved_selections" :key="saved_selection.id"
                            :selection="JSON.parse(saved_selection)" :save_prompt="save_prompt" :show_saved_selections="show_saved_selections"
                            :edit_selections="edit_selections" v-on:play_sound="play_sound"></saved-selection>
           <new-selection :selection="selection" :save_prompt="save_prompt" :selection_active="selection_active" v-on:save_selection="save_selection"></new-selection>
-          <img id="map_image"v-on:mousedown="start_select" :class="{show_image:image_stored}" :src="`${image}`" v-on:load="image_loaded" v-on:error="image_error" v-on:mousemove="select">
         </div>
     </div>
-    <ul style="text-align: left">
-      <h3>Sounds:</h3>
-      <li>static/sounds/bell.mp3 </li>
-      <li>static/sounds/positive.mp3</li>
-    </ul>
-    <ul style="text-align: left">
-      <h3>Images:</h3>
-      <li>static/images/the_cove.jpeg</li>
-      <li>static/images/fishy.jpeg</li>
-    </ul>
     <audio ref="play_sound" autoplay v-bind:src="`${audio}`" type="audio/mp3">
     </audio>
   </div>
