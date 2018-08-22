@@ -15,7 +15,7 @@
       </ul>
     </div>
     <div id="sound_map">
-      <h1>Sound Map {{name}}</h1>
+      <h1>Geluids Kaart {{name}}</h1>
       <div class="image_control">
         <button v-if="!image_stored" v-on:click="save_image">Save image</button>
         <button v-if="image_stored" v-on:click="change_image">Change image</button>
@@ -30,7 +30,7 @@
         <button v-if="saved_selections.length > 0" v-on:click="reset_saved_selections">Reset selections</button>
       </div>
       <div class="map" v-on:mouseup="stop_select">
-        <img id="map_image" v-on:mousedown="start_select" :class="{show_image:image_stored}" :src="`${image}`"
+        <img id="map_image" v-on:mousedown="start_select" v-on:touchstart="start_select" :class="{show_image:image_stored}" :src="`${image}`"
              v-on:load="image_loaded" v-on:error="image_error" v-on:mousemove="select">
         <saved-selection v-for="saved_selection in saved_selections" :key="saved_selection.id"
                          :selection="JSON.parse(saved_selection)" :save_prompt="save_prompt"
