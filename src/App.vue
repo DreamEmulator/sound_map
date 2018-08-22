@@ -2,7 +2,7 @@
   <div id="app">
     <img class="logo" src="./assets/logo.png">
     <div class="dev_notes" style="float: right; margin-right: 2em; text-align: left; background-color: aliceblue; padding: 0.25em 1em">
-      <h3>Dev Notes</h3>
+      <h3>Copy/Paste</h3>
       <ul style="text-align: left">
         <h3>Sounds:</h3>
         <li>static/sounds/bell.mp3</li>
@@ -10,33 +10,46 @@
       </ul>
       <ul style="text-align: left">
         <h3>Images:</h3>
+        <li>static/images/wereld.jpg</li>
         <li>static/images/the_cove.jpeg</li>
         <li>static/images/fishy.jpeg</li>
       </ul>
     </div>
-    <div id="sound_map">
+    <div id="sound_map" v-on:click="cancel_select">
       <h1>Geluids Kaart {{name}}</h1>
-      <div class="image_control">
-        <button v-if="!image_stored" v-on:click="save_image">Save image</button>
-        <button v-if="image_stored" v-on:click="change_image">Change image</button>
-        <input v-if="!image_stored" v-model="image" placeholder="Enter URL for image">
-      </div>
-      <div class="selection_control">
-        <button v-if="saved_selections.length > 0" v-on:click="show_saved_selections = !show_saved_selections">Show
+      <div class="controls">
+        <ul class="image">
+          <li>
+            <span>Add an image:</span>
+            <button v-if="!image_stored" v-on:click="save_image">Save image</button>
+            <button v-if="image_stored" v-on:click="change_image">Change image</button>
+            <input v-if="!image_stored" v-model="image" placeholder="Enter URL for image">
+          </li>
+        </ul>
+        <ul class="selections">
+        <li><button v-if="saved_selections.length > 0" v-on:click="show_saved_selections = !show_saved_selections">Show
           selections
-        </button>
-        <button v-if="saved_selections.length > 0" v-on:click="edit_selections = !edit_selections">Edit selections
-        </button>
-        <button v-if="saved_selections.length > 0" v-on:click="reset_saved_selections">Reset selections</button>
+        </button></li>
+        <li><button v-if="saved_selections.length > 0" v-on:click="edit_selections = !edit_selections">Edit selections
+        </button></li>
+        <li><button v-if="saved_selections.length > 0" v-on:click="reset_saved_selections">Reset selections</button></li>
+        </ul>
       </div>
-      <div class="map" v-on:mouseup="stop_select">
-        <img id="map_image" v-on:mousedown="start_select" v-on:touchstart="start_select" :class="{show_image:image_stored}" :src="`${image}`"
-             v-on:load="image_loaded" v-on:error="image_error" v-on:mousemove="select">
-        <saved-selection v-for="saved_selection in saved_selections" :key="saved_selection.id"
+      <div class="map" v-on:click="stop_select($event)">
+        <img id="map_image"
+             v-on:mousedown="start_select($event)"
+             :class="{show_image:image_stored}"
+             :src="`${image}`"
+             v-on:load="image_loaded"
+             v-on:error="image_error"
+             v-on:mousemove="select($event)">
+        <saved-selection v-for="saved_selection in saved_selections"
+                         :key="saved_selection.id"
                          :selection="JSON.parse(saved_selection)" :save_prompt="save_prompt"
                          :show_saved_selections="show_saved_selections"
                          :edit_selections="edit_selections" v-on:play_sound="play_sound"></saved-selection>
-        <new-selection :selection="selection" :save_prompt="save_prompt" :selection_active="selection_active"
+        <new-selection :selection="selection"
+                       :save_prompt="save_prompt" :selection_active="selection_active"
                        v-on:save_selection="save_selection"></new-selection>
       </div>
     </div>
@@ -89,7 +102,7 @@
       }
     },
     methods: {
-      e_stop: function () {
+      e_stop: function (e) {
         event.preventDefault();
         event.stopPropagation();
       },
@@ -209,14 +222,13 @@
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
     color: #2c3e50;
+    padding: 2em;
   }
 
   #app img.logo {
     position: fixed;
     top: 1em;
-    left: 6em;
     height: 2em;
   }
 
@@ -224,11 +236,16 @@
     display: inline-block;
     margin-top: 2.5em;
     border-radius: 0.5em;
-    left: 1em;
+    margin: 1em;
     padding: 1em 3.5em;
     background-color: #e6e6e6;
     transition: opacity 0.5s;
     opacity: 1;
+  }
+
+  #app .controls ul {
+    padding: 0;
+    list-style: none;
   }
 
   #app .controls.show {
@@ -250,10 +267,9 @@
   #app .map img {
     max-width: 80vw;
     max-height: 80vh;
-    opacity: 0;
+    opacity: 0.5;
     background-color: aliceblue;
-    transition: opacity 1s, transform 0.5s;
-    transform: scale(0);
+    transition: opacity 1s;
     cursor: pointer;
   }
 
