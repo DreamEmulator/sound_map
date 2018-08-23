@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <img class="logo" src="./assets/logo.png">
-    <div class="dev_notes" style="float: right; margin-right: 2em; text-align: left; background-color: aliceblue; padding: 0.25em 1em">
+    <div class="dev_notes"
+         style="float: right; margin-right: 2em; text-align: left; background-color: aliceblue; padding: 0.25em 1em">
       <h3>Copy/Paste</h3>
       <ul style="text-align: left">
         <h3>Sounds:</h3>
@@ -17,25 +18,35 @@
     </div>
     <div id="sound_map" v-on:click="cancel_select">
       <h1>Geluids Kaart {{name}}</h1>
+
       <div class="controls">
-        <ul class="image">
-          <li>
-            <span>Add an image:</span>
-            <button v-if="!image_stored" v-on:click="save_image">Save image</button>
-            <button v-if="image_stored" v-on:click="change_image">Change image</button>
-            <input v-if="!image_stored" v-model="image" placeholder="Enter URL for image">
-          </li>
-        </ul>
-        <ul class="selections">
-        <li><button v-if="saved_selections.length > 0" v-on:click="show_saved_selections = !show_saved_selections">Show
-          selections
-        </button></li>
-        <li><button v-if="saved_selections.length > 0" v-on:click="edit_selections = !edit_selections">Edit selections
-        </button></li>
-        <li><button v-if="saved_selections.length > 0" v-on:click="reset_saved_selections">Reset selections</button></li>
-        </ul>
+        <ul><li><button v-on:click="edit_mode = !edit_mode">Edit</button></li></ul>
+
+        <div v-if="edit_mode">
+          <ul class="image">
+            <li>
+              <button v-if="!image_stored" v-on:click="save_image">Choose image</button>
+              <button v-if="image_stored" v-on:click="change_image">Change image</button>
+              <input v-if="!image_stored" v-model="image" placeholder="Enter URL for image">
+            </li>
+          </ul>
+          <ul class="selections" v-if="saved_selections.length > 0">
+            <li>
+              <button v-on:click="show_saved_selections = !show_saved_selections">
+                Show selections
+              </button>
+            </li>
+            <!--<li><button v-if="saved_selections.length > 0 && show_saved_selections" v-on:click="edit_selections = !edit_selections">Edit selections-->
+            <!--</button></li>-->
+            <li>
+              <button v-if="saved_selections.length > 0" v-on:click="reset_saved_selections">Reset selections</button>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div class="map" v-on:click="stop_select($event)">
+      <div class="map"
+           v-on:click="stop_select($event)"
+           :class="{edit_mode: edit_mode}">
         <img id="map_image"
              v-on:mousedown="start_select($event)"
              :class="{show_image:image_stored}"
@@ -47,8 +58,10 @@
                          :key="saved_selection.id"
                          :selection="JSON.parse(saved_selection)" :save_prompt="save_prompt"
                          :show_saved_selections="show_saved_selections"
-                         :edit_selections="edit_selections" v-on:play_sound="play_sound"></saved-selection>
-        <new-selection :selection="selection"
+                         :edit_selections="edit_selections"
+                         :edit_mode="edit_mode"
+                         v-on:play_sound="play_sound"></saved-selection>
+        <new-selection v-if="edit_mode" :selection="selection"
                        :save_prompt="save_prompt" :selection_active="selection_active"
                        v-on:save_selection="save_selection"></new-selection>
       </div>
@@ -71,6 +84,7 @@
     data: function () {
       return {
         name: "",
+        edit_mode: true,
 
         show_controls: false,
         image: "",
@@ -97,7 +111,7 @@
         selection_active: false,
         save_prompt: false,
         saved_selections: [],
-        show_saved_selections: true,
+        show_saved_selections: false,
         edit_selections: false,
       }
     },
@@ -232,20 +246,16 @@
     height: 2em;
   }
 
-  #app .controls {
-    display: inline-block;
-    margin-top: 2.5em;
-    border-radius: 0.5em;
-    margin: 1em;
-    padding: 1em 3.5em;
-    background-color: #e6e6e6;
-    transition: opacity 0.5s;
-    opacity: 1;
-  }
-
   #app .controls ul {
-    padding: 0;
+    opacity: 1;
+    display: inline-block;
+    margin: 0.25em;
     list-style: none;
+    padding: 1em 2.5em;
+    display: inline-block;
+    border-radius: 0.5em;
+    transition: opacity 0.5s;
+    background-color: #e6e6e6;
   }
 
   #app .controls.show {
@@ -271,6 +281,10 @@
     background-color: aliceblue;
     transition: opacity 1s;
     cursor: pointer;
+  }
+
+  #app .map.edit_mode {
+    cursor: crosshair;
   }
 
   #app .map img.show_image {

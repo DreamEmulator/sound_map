@@ -4,7 +4,7 @@
          v-on:mouseleave="show_text = false"
          :style="{top: selection.from_y + '%', left: selection.from_x + '%', width: selection.width + '%', height: selection.height+ '%'}">
       <h2 class="selection_text" :class="{show: show_text}">{{selection.text}}</h2>
-      <div class="selection_info" :class="{show: show_saved_selections}">
+      <div class="selection_info" :class="{show: show_saved_selections && edit_mode}">
       <div class="edit" v-if="edit_selections">
         <button v-on:click="edit_prompt = !edit_prompt">Edit</button>
       </div>
@@ -20,7 +20,7 @@
 <script>
   export default {
     name: "SavedSelection",
-    props: ['edit_selections', 'show_saved_selections', 'selection', 'save_prompt'],
+    props: ['edit_selections', 'edit_mode','show_saved_selections', 'selection', 'save_prompt'],
     data: function () {
       return {
         show_text: false,
@@ -31,12 +31,14 @@
 </script>
 
 <style scoped>
+
   #app .map .saved_selection {
-    z-index: 1;
+    z-index: 0;
     position: absolute;
     display: flex;
     justify-content: center;
     align-content: center;
+    transition: opacity 0.5s;
   }
 
   #app .map .saved_selection .selection_text {
@@ -46,12 +48,13 @@
     padding: 0.1em 0.2em;
     border-radius: 0.1em;
     align-self: center;
-    transition: opacity 1s;
+    transition: opacity 1s 1s;
     border: 0.1em solid #ffffffa3;
     background-color: rgba(98, 178, 249, 0.75);
   }
 
   #app .map .saved_selection .selection_text.show {
+    transition: opacity 1s 0s;
     opacity: 1;
   }
 
@@ -63,6 +66,7 @@
     transition: opacity 0.5s;
     background-color: rgba(240, 229, 236, 0.5);
     border: 0.21em solid rgba(160, 160, 160, 0.8);
+    cursor: pointer ;
   }
   #app .map .saved_selection .selection_info.show {
     opacity: 1;

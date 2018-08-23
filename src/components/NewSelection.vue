@@ -19,17 +19,21 @@
 <style scoped>
   #app .map .selection  {
     z-index: 1;
-    display: none;
+    display: flex;
     position: absolute;
     border-radius: 1.5em;
     background-color: rgba(240, 229, 236, 0.5);
     border: 0.21em solid rgba(219, 219, 226, 0.81);
     justify-content: center;
     align-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s;
   }
 
   #app .map .selection.active {
-    display: flex;
+    opacity: 1;
+    pointer-events: auto;
   }
 
   #app .map .selection .save_prompt {
