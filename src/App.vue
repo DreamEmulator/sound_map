@@ -11,7 +11,7 @@
       </ul>
       <ul style="text-align: left">
         <h3>Images:</h3>
-        <li>static/images/wereld.jpg</li>
+        <li>static/images/world.jpg</li>
         <li>static/images/the_cove.jpeg</li>
         <li>static/images/fishy.jpeg</li>
       </ul>
@@ -20,7 +20,10 @@
       <h1>Geluids Kaart {{name}}</h1>
 
       <div class="controls">
-        <ul><li><button v-on:click="edit_mode = !edit_mode">Edit</button></li></ul>
+        <ul><li><button v-on:click="edit_mode = !edit_mode">
+          <span v-if="!edit_mode">Edit</span>
+          <span v-if="edit_mode">Play</span>
+        </button></li></ul>
 
         <div v-if="edit_mode">
           <ul class="image">
@@ -176,7 +179,7 @@
       },
       cancel_select: function () {
         this.e_stop();
-        this.selecting = false;
+        this.selection_active = false;
         this.save_prompt = false;
       },
       stop_select: function () {

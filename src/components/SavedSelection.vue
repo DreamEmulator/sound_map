@@ -1,9 +1,9 @@
 <template>
     <div class="saved_selection"
-         v-on:click="$emit('play_sound',selection.sound);show_text = true"
+         v-on:click="$emit('play_sound',selection.sound); show_text = true"
          v-on:mouseleave="show_text = false"
          :style="{top: selection.from_y + '%', left: selection.from_x + '%', width: selection.width + '%', height: selection.height+ '%'}">
-      <h2 class="selection_text" :class="{show: show_text, show:show_saved_selections}">{{selection.text}}</h2>
+      <h2 class="selection_text" :class="{show: show_text || edit_mode && show_saved_selections}">{{selection.text}}</h2>
       <div class="selection_info" :class="{show: show_saved_selections && edit_mode}">
       <div class="edit" v-if="edit_selections">
         <button v-on:click="edit_prompt = !edit_prompt">Edit</button>
