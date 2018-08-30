@@ -2,7 +2,7 @@
   <div id="app">
     <img class="logo" src="./assets/logo.png">
     <div class="dev_notes"
-         style="float: right; margin-right: 2em; text-align: left; background-color: aliceblue; padding: 0.25em 1em">
+         style="float: right; margin-right: 2em; text-align: left; background-color: aliceblue; padding: 0.25em 1em; max-width: 400px; word-wrap: break-word;">
       <h3>Copy/Paste</h3>
       <ul style="text-align: left">
         <h3>Sounds:</h3>
@@ -15,15 +15,26 @@
         <li>static/images/the_cove.jpeg</li>
         <li>static/images/fishy.jpeg</li>
       </ul>
+      <ul>
+        <h3>JSON:</h3>
+        <li>
+          <input id="json_sound_map" v-bind:value="JSON.stringify(saved_selections)">
+          <button v-on:click="copy_json">Copy JSON</button>
+        </li>
+      </ul>
     </div>
     <div id="sound_map" v-on:click="cancel_select">
       <h1>Geluids Kaart {{name}}</h1>
 
       <div class="controls">
-        <ul><li><button v-on:click="edit_mode = !edit_mode">
-          <span v-if="!edit_mode">Edit</span>
-          <span v-if="edit_mode">Play</span>
-        </button></li></ul>
+        <ul>
+          <li>
+            <button v-on:click="edit_mode = !edit_mode">
+              <span v-if="!edit_mode">Edit</span>
+              <span v-if="edit_mode">Play</span>
+            </button>
+          </li>
+        </ul>
 
         <div v-if="edit_mode">
           <ul class="image">
@@ -32,6 +43,12 @@
               <button v-if="image_stored" v-on:click="change_image">Change image</button>
               <input v-if="!image_stored" v-model="image" placeholder="Enter URL for image">
             </li>
+            <li>
+              <button v-on:click="load_json">Load JSON</button>
+            </li>
+            <li>
+              <textarea v-model="json_input"></textarea>
+            </li>
           </ul>
           <ul class="selections" v-if="saved_selections.length > 0">
             <li>
@@ -39,14 +56,18 @@
                 Show selections
               </button>
             </li>
-            <!--<li><button v-if="saved_selections.length > 0 && show_saved_selections" v-on:click="edit_selections = !edit_selections">Edit selections-->
-            <!--</button></li>-->
+            <li>
+              <button v-if="saved_selections.length > 0 && show_saved_selections"
+                      v-on:click="edit_selections = !edit_selections">Edit selections
+              </button>
+            </li>
             <li>
               <button v-if="saved_selections.length > 0" v-on:click="reset_saved_selections">Reset selections</button>
             </li>
           </ul>
         </div>
       </div>
+
       <div class="map"
            v-on:click="stop_select($event)"
            :class="{edit_mode: edit_mode}">
@@ -98,6 +119,8 @@
           height: 0,
         },
 
+        json_input: "",
+
         audio: "",
 
         selecting: false,
@@ -123,7 +146,6 @@
         event.preventDefault();
         event.stopPropagation();
       },
-
       //Image CRUD
       image_loaded: function () {
         this.image_shown = true;
@@ -151,6 +173,16 @@
         this.image_dimensions.width = image_dimensions.width;
         this.image_dimensions.top = image_dimensions.top;
         this.image_dimensions.left = image_dimensions.left;
+      },
+
+      //JSON:
+      copy_json: function () {
+        var json = document.getElementById('json_sound_map');
+        json.select();
+        document.execCommand("copy");
+      },
+      load_json: function () {
+        this.saved_selections = (JSON.parse(this.json_input));
       },
 
       //Selection methods
